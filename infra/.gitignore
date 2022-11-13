@@ -42,3 +42,4 @@ terraform.rc
 target/
 dbt_packages/
 logs/
+files/
