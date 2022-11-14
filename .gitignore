@@ -13,3 +13,4 @@
 **/.history
 target/*
 logs/*
+dbt-venv/

@@ -58,3 +58,105 @@ resource "aws_lambda_function" "terraform_lambda_func" {
   depends_on    = [aws_iam_role_policy_attachment.attach_iam_policy_to_iam_role]
   tags          = local.tags
 }
+
+
+
+################################################################################
+# Snowflake Resources
+################################################################################
+
+locals {
+  sf_role_name = "${var.stack_name}-snowflake-int-obj-role"
+  sf_role_arn  = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${local.sf_role_name}"
+}
+
+# Storage integration object
+# Note: the arn for the IAM role is pre-calculated to get around
+# the apparent circular dependency
+resource "snowflake_storage_integration" "snowflake_int_obj" {
+  name    = "S3_INT_AWS_RDS"
+  comment = "Storage integration for RDS data loading from AWS"
+  type    = "EXTERNAL_STAGE"
+
+  enabled = true
+
+  storage_allowed_locations = ["s3://${local.bucket_name}/"]
+  #   storage_blocked_locations = [""]
+  #   storage_aws_object_acl    = "bucket-owner-full-control"
+
+  storage_provider = "S3"
+  #storage_aws_external_id  = "..."
+  #storage_aws_iam_user_arn = "..."
+  storage_aws_role_arn = local.sf_role_arn
+}
+
+#
+# Role to allow integration object access to the S3 bucket
+resource "aws_iam_role" "iam-int-obj-role" {
+  name = local.sf_role_name
+
+  # Terraform's "jsonencode" function converts a
+  # Terraform expression result to valid JSON syntax.
+  assume_role_policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Principal" : {
+          "AWS" : snowflake_storage_integration.snowflake_int_obj.storage_aws_iam_user_arn
+        },
+        "Action" : "sts:AssumeRole",
+        "Condition" : {
+          "StringEquals" : {
+            "sts:ExternalId" : snowflake_storage_integration.snowflake_int_obj.storage_aws_external_id
+          }
+        }
+      }
+    ]
+  })
+
+  tags = local.tags
+}
+
+
+resource "snowflake_warehouse" "warehouse" {
+  name           = var.snowflake_warehouse
+  warehouse_size = var.snowflake_warehouse_size
+
+  auto_suspend = 60
+}
+
+resource "snowflake_database" "sf_dev_db" {
+  name                        = "DEV"
+  comment                     = "DEV database"
+  data_retention_time_in_days = 3
+}
+
+resource "snowflake_schema" "sf_schema" {
+  database = snowflake_database.sf_dev_db.name
+  name     = "RAW_MOVIE"
+  comment  = "Schema for RAW movie data"
+
+  is_transient        = false
+  is_managed          = false
+  data_retention_days = 1
+}
+
+resource "snowflake_file_format" "json_file_format" {
+  name        = "JSON_FILE_FORMAT"
+  database    = snowflake_database.sf_dev_db.name
+  schema      = snowflake_schema.sf_schema.name
+  format_type = "JSON"
+  binary_format = "HEX"
+  compression = "AUTO"
+  strip_outer_array = true
+}
+
+resource "snowflake_stage" "s3_stage" {
+  name                = "S3_STAGE"
+  url                 = "s3://${local.bucket_name}/"
+  database            = snowflake_database.sf_dev_db.name
+  schema              = snowflake_schema.sf_schema.name
+  storage_integration = snowflake_storage_integration.snowflake_int_obj.name
+  file_format         = "format_name = ${snowflake_database.sf_dev_db.name}.${snowflake_schema.sf_schema.name}.${snowflake_file_format.json_file_format.name}"
+}

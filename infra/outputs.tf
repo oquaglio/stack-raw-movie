@@ -20,3 +20,8 @@ output "terraform_lambda_func" {
   description = "Lambda Role ARN"
   value       = aws_lambda_function.terraform_lambda_func.arn
 }
+
+output "json_file_format" {
+  description = "Snowflake JSON FILE FORMAT OBJECT"
+  value       = snowflake_file_format.json_file_format.name
+}
