@@ -18,7 +18,7 @@ module "s3_bucket" {
 
   bucket = local.bucket_name
 
-  attach_deny_insecure_transport_policy = true
+  attach_deny_insecure_transport_policy = false
 
   block_public_acls       = true
   block_public_policy     = true

@@ -90,9 +90,35 @@ resource "snowflake_storage_integration" "snowflake_int_obj" {
   storage_aws_role_arn = local.sf_role_arn
 }
 
+resource "aws_iam_policy" "bucket_policy" {
+  name        = "${var.stack_name}-bucket-policy"
+  path        = "/"
+  description = "Allow "
+
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Sid" : "VisualEditor0",
+        "Effect" : "Allow",
+        "Action" : [
+          "s3:PutObject",
+          "s3:GetObject",
+          "s3:ListBucket",
+          "s3:DeleteObject"
+        ],
+        "Resource" : [
+          "arn:aws:s3:::*/*",
+          "arn:aws:s3:::${local.bucket_name}"
+        ]
+      }
+    ]
+  })
+}
+
 #
 # Role to allow integration object access to the S3 bucket
-resource "aws_iam_role" "iam-int-obj-role" {
+resource "aws_iam_role" "iam_int_obj_role" {
   name = local.sf_role_name
 
   # Terraform's "jsonencode" function converts a
@@ -118,6 +144,10 @@ resource "aws_iam_role" "iam-int-obj-role" {
   tags = local.tags
 }
 
+resource "aws_iam_role_policy_attachment" "bucket_policy_attachment" {
+  role       = aws_iam_role.iam_int_obj_role.name
+  policy_arn = aws_iam_policy.bucket_policy.arn
+}
 
 resource "snowflake_warehouse" "warehouse" {
   name           = var.snowflake_warehouse
