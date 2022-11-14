@@ -25,3 +25,11 @@ Create tables:
 ``` shell
 dbt run-operation pre_sql --args '{db_name: DEV, schema_name: RAW_MOVIE}'
 ```
+
+## DBT Freshness
+
+Run:
+
+``` shell
+dbt source freshness
+```

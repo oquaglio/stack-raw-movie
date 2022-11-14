@@ -1,0 +1,18 @@
+version: 2
+
+sources:
+  - name: raw_movie_data
+    description: "RAW movie data"
+    database: DEV
+    schema: RAW_MOVIE
+    freshness:
+      warn_after:
+        count: 60
+        period: minute
+      error_after:
+        count: 120
+        period: minute
+    loaded_at_field: LOADED_AT
+    tables:
+      - name: MOVIE_RAW_PAYLOAD
+        description: "RAW table for movie json data"
