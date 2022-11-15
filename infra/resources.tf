@@ -86,7 +86,7 @@ locals {
 # Note: the arn for the IAM role is pre-calculated to get around
 # the apparent circular dependency
 resource "snowflake_storage_integration" "snowflake_int_obj" {
-  name    = "S3_INT_AWS_RDS"
+  name    = "S3_STORAGE_INT"
   comment = "Storage integration for RDS data loading from AWS"
   type    = "EXTERNAL_STAGE"
 
