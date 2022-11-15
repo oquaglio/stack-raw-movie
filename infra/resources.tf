@@ -185,12 +185,12 @@ resource "snowflake_schema" "sf_schema" {
 }
 
 resource "snowflake_file_format" "json_file_format" {
-  name        = "JSON_FILE_FORMAT"
-  database    = snowflake_database.sf_dev_db.name
-  schema      = snowflake_schema.sf_schema.name
-  format_type = "JSON"
-  binary_format = "HEX"
-  compression = "AUTO"
+  name              = "JSON_FILE_FORMAT"
+  database          = snowflake_database.sf_dev_db.name
+  schema            = snowflake_schema.sf_schema.name
+  format_type       = "JSON"
+  binary_format     = "HEX"
+  compression       = "AUTO"
   strip_outer_array = true
 }
 
