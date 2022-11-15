@@ -16,9 +16,14 @@ output "lambda_role_arn" {
   value       = aws_iam_role.lambda_role.arn
 }
 
-output "terraform_lambda_func" {
+output "movie_loader_lambda_func" {
   description = "Lambda Role ARN"
-  value       = aws_lambda_function.terraform_lambda_func.arn
+  value       = aws_lambda_function.movie_loader_lambda_func.arn
+}
+
+output "movie_producer_lambda_func" {
+  description = "Lambda Role ARN"
+  value       = aws_lambda_function.movie_producer_lambda_func.arn
 }
 
 output "json_file_format" {
