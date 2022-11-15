@@ -1,3 +1,7 @@
+################################################################################
+# Lambda Resources
+################################################################################
+
 resource "aws_iam_role" "lambda_role" {
   name               = "${var.stack_name}-lambda-role"
   assume_role_policy = <<EOF
