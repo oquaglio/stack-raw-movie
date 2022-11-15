@@ -1,3 +1,4 @@
+# Override using cmd line args or .tfvars file
 #--------------------------------------------------------------
 # Global Config
 #--------------------------------------------------------------
@@ -36,9 +37,7 @@ variable "environment" {
 
 
 #--------------------------------------------------------------
-# Snowflake
-#
-# Override using cmd line args or .tfvars file
+# Snowflake#
 #--------------------------------------------------------------
 
 variable "snowflake_user" {
