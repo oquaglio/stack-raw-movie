@@ -1,20 +1,16 @@
+
+
 provider "aws" {
-  region = var.region
+  profile = var.aws_profile
+  region  = var.aws_region
 }
 
 provider "random" {}
 
-provider "time" {}
-
 provider "snowflake" {
-  // required
-  username         = var.snowflake_user
-  account          = var.snowflake_account
-  region           = var.snowflake_region
-  private_key_path = var.snowflake_private_key_path
-
-  // optional, at exactly one must be set
-  #password = var.snowflake_password
-
+  username         = var.snowflake_account_param["user"]
+  account          = var.snowflake_account_param["account"]
+  region           = var.snowflake_account_param["region"]
+  private_key_path = var.snowflake_account_param["private_key_path"]
   #warehouse = var.snowflake_warehouse
 }
