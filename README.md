@@ -2,6 +2,18 @@
 
 Playpen for dbt, terraform, airflow, flyway...
 
+## Terraform
+
+Powershell:
+``` shell
+.\scripts\deploy_dev.ps1
+```
+
+SH:
+``` shell
+TBC
+```
+
 ## Create Python Virt Env for DBT
 
 In root:
