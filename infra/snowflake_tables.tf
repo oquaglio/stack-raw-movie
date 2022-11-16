@@ -40,12 +40,6 @@ resource "snowflake_table" "movie" {
   change_tracking     = false
 
   column {
-    name     = "FILE_NAME"
-    type     = "STRING(100)"
-    nullable = true
-  }
-
-  column {
     name     = "ID"
     type     = "INTEGER"
     nullable = true
@@ -65,13 +59,13 @@ resource "snowflake_table" "movie" {
 
   column {
     name     = "YEAR"
-    type     = "integer"
+    type     = "INTEGER"
     nullable = true
   }
 
   column {
     name     = "LENGTH"
-    type     = "integer"
+    type     = "INTEGER"
     nullable = true
   }
 
@@ -83,7 +77,7 @@ resource "snowflake_table" "movie" {
 
   column {
     name     = "RATING"
-    type     = "number(2,1)"
+    type     = "NUMBER(2,1)"
     nullable = true
   }
 
@@ -96,6 +90,18 @@ resource "snowflake_table" "movie" {
   column {
     name     = "COUNTRY"
     type     = "STRING"
+    nullable = true
+  }
+
+  column {
+    name     = "SOURCE_FILE"
+    type     = "STRING"
+    nullable = true
+  }
+
+  column {
+    name     = "FILE_ROW_NUM"
+    type     = "NUMBER(38,0)"
     nullable = true
   }
 
