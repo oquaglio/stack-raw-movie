@@ -18,10 +18,10 @@
 #  "Year": "1979"
 # }
 #
-resource "snowflake_function" "get_name_value_funct" {
+resource "snowflake_function" "get_name_value_func" {
   name     = "GET_NAME_VALUE"
-  database = snowflake_schema.sf_schema.database
-  schema   = snowflake_schema.sf_schema.name
+  database = snowflake_schema.schema.database
+  schema   = snowflake_schema.schema.name
   arguments {
     name = "JSON_ARRAY"
     type = "ARRAY"

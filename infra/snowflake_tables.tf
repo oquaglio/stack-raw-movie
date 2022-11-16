@@ -1,10 +1,10 @@
 
 resource "snowflake_table" "movie_raw_payload" {
-  database            = snowflake_schema.sf_schema.database
-  schema              = snowflake_schema.sf_schema.name
+  database            = snowflake_schema.schema.database
+  schema              = snowflake_schema.schema.name
   name                = "MOVIE_RAW_PAYLOAD"
   comment             = "A table for Movie RAW Payloads"
-  data_retention_days = snowflake_schema.sf_schema.data_retention_days
+  data_retention_days = snowflake_schema.schema.data_retention_days
   change_tracking     = false
 
   column {
@@ -32,11 +32,11 @@ resource "snowflake_table" "movie_raw_payload" {
 }
 
 resource "snowflake_table" "movie" {
-  database            = snowflake_schema.sf_schema.database
-  schema              = snowflake_schema.sf_schema.name
+  database            = snowflake_schema.schema.database
+  schema              = snowflake_schema.schema.name
   name                = "MOVIE"
   comment             = "A table for Movies"
-  data_retention_days = snowflake_schema.sf_schema.data_retention_days
+  data_retention_days = snowflake_schema.schema.data_retention_days
   change_tracking     = false
 
   column {
