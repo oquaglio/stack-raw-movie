@@ -1,6 +1,6 @@
 // Creates SNS topic
 resource "aws_sns_topic" "snowflake_load_bucket_topic" {
-  name            = "topic-${local.bucket_name}"
+  name            = "topic-${local.bucket_name}-1"
   delivery_policy = <<EOF
   {
     "http": {
