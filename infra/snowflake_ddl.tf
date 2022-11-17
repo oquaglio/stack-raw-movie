@@ -32,7 +32,7 @@ resource "snowflake_file_format" "json_file_format" {
 }
 
 resource "snowflake_stage" "stage_movies" {
-  name                = replace(upper("${var.stack_name}_${var.aws_region_code}_movies_load_stage_${var.environment}"), "-", "_")
+  name                = replace(upper("${var.stack_name}_${var.aws_region_code}_movies_load_stage"), "-", "_")
   url                 = "s3://${local.bucket_name}/movies"
   database            = snowflake_schema.schema.database
   schema              = snowflake_schema.schema.name
