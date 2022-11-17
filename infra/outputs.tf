@@ -92,3 +92,7 @@ output "snowflake_pipe_name" {
 output "snowflake_pipe" {
   value = snowflake_pipe.pipe_movies
 }
+
+output "aws_s3_bucket_notification" {
+  value = aws_s3_bucket_notification.new_objects_notification
+}
