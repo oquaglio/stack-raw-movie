@@ -85,6 +85,10 @@ output "snowflake_stage_integration" {
   value = snowflake_stage.stage_movies.storage_integration
 }
 
+output "snowflake_table" {
+  value = snowflake_table.movie.name
+}
+
 output "snowflake_pipe_name" {
   value = snowflake_pipe.pipe_movies.name
 }
