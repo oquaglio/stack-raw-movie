@@ -84,3 +84,11 @@ output "snowflake_stage_movies" {
 output "snowflake_stage_integration" {
   value = snowflake_stage.stage_movies.storage_integration
 }
+
+output "snowflake_pipe_name" {
+  value = snowflake_pipe.pipe_movies.name
+}
+
+output "snowflake_pipe" {
+  value = snowflake_pipe.pipe_movies
+}
