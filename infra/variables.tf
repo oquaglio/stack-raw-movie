@@ -44,6 +44,14 @@ variable "environment" {
   default     = "dev"
 }
 
+# Bucket
+
+variable "bucket_object_prefixes" {
+  description = "List of bucket object prefixes to create"
+  type        = set(string)
+  default     = ["movies/", "directors/", "actors/"]
+}
+
 #--------------------------------------------------------------
 # Snowflake#
 #--------------------------------------------------------------

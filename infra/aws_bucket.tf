@@ -1,6 +1,7 @@
 #Create an encrypted bucket and restrict access from public
 resource "aws_s3_bucket" "stage_bucket_load" {
-  bucket = local.bucket_name
+  bucket        = local.bucket_name
+  force_destroy = true
 
   tags = local.tags
 }
@@ -8,7 +9,7 @@ resource "aws_s3_bucket" "stage_bucket_load" {
 resource "aws_s3_bucket_versioning" "this" {
   bucket = aws_s3_bucket.stage_bucket_load.id
   versioning_configuration {
-    status = "Enabled"
+    status = "Disabled"
   }
 }
 
@@ -34,4 +35,10 @@ resource "aws_s3_bucket_public_access_block" "stage_bucket_load_access_block" {
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
+}
+
+resource "aws_s3_object" "object" {
+  bucket   = aws_s3_bucket.stage_bucket_load.id
+  for_each = toset(var.bucket_object_prefixes)
+  key      = each.value
 }
