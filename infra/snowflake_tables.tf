@@ -112,10 +112,7 @@ resource "snowflake_table" "movie" {
 
 }
 
-
-
 resource "snowflake_table" "snowflake_tables" {
-
   for_each = { for tbl in local.tables : tbl.name => tbl }
 
   database            = snowflake_schema.schema.database
@@ -123,16 +120,29 @@ resource "snowflake_table" "snowflake_tables" {
   data_retention_days = snowflake_schema.schema.data_retention_days
   change_tracking     = false
   name                = each.key
+  comment             = lookup(each.value, "comment", null)
+  dynamic "column" { # can add multiple instances of this
+    for_each = { for fld in each.value.fields : fld.name => fld }
 
-  column {
-    name = "test"
-    type = "INTEGER"
+    content {
+      name = column.value.name
+      type = column.value.type
+      # set defaults on the following attr if missing
+      comment  = lookup(column.value, "comment", null)
+      nullable = lookup(column.value, "nullable", true)
+    }
   }
+}
 
+resource "snowflake_tag" "tag" {
+  name           = "cost_center"
+  database       = snowflake_schema.schema.database
+  schema         = snowflake_schema.schema.name
+  allowed_values = ["finance", "engineering"]
 }
 
 #####################################
-# Table definitions
+# Table locals
 #####################################
 
 locals {
@@ -142,18 +152,18 @@ locals {
       name    = "MOVIE2"
       comment = "A table for Movies"
       fields = [
-        { name = "ID", type = "INTEGER", nullable = true },
-        { name = "TITLE", type = "INTEGER", nullable = true }
+        { name = "ID", type = "INTEGER" },
+        { name = "TITLE", type = "INTEGER", nullable = false }
       ]
     },
     {
       name    = "ACTOR"
       comment = "A table for Actors"
       fields = [
-        { name = "ID", type = "INTEGER", nullable = true },
-        { name = "FIRST_NAME", type = "STRING", nullable = true },
-        { name = "LAST_NAME", type = "STRING", nullable = true },
-        { name = "DOB", type = "DATE", nullable = true }
+        { name = "ID", type = "INTEGER", comment = "ID field" },
+        { name = "FIRST_NAME", type = "STRING"},
+        { name = "LAST_NAME", type = "STRING"},
+        { name = "DOB", type = "DATE", comment = "Date of Birth" }
       ]
     }
   ]
@@ -162,5 +172,20 @@ locals {
     "MOVIE" = "movies",
     "ACTOR" = "actors"
   }
+
+  copy_statements = {
+    "to" = "do"
+  }
+
+  table_fields = flatten([
+    for table in local.tables : [
+      for field in table.fields : {
+        table_name     = table.name
+        field_name     = field.name
+        field_type     = field.type
+        field_nullable = lookup(field, "nullable", null)
+      }
+    ]
+  ])
 
 }

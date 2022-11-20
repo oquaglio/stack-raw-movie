@@ -128,3 +128,11 @@ output "bucket_key_prefixes" {
 output "movie_key_prefix" {
   value = lookup(local.bucket_key_prefixes, "MOVIE", "default")
 }
+
+output "table_fields_2" {
+  value = local.table_fields
+}
+
+output "snowflake_table_names" {
+  value = snowflake_table.snowflake_tables[*]
+}
