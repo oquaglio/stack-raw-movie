@@ -121,6 +121,7 @@ resource "snowflake_table" "snowflake_tables" {
   change_tracking     = false
   name                = each.key
   comment             = lookup(each.value, "comment", null)
+
   dynamic "column" { # can add multiple instances of this
     for_each = { for fld in each.value.fields : fld.name => fld }
 
@@ -132,6 +133,17 @@ resource "snowflake_table" "snowflake_tables" {
       nullable = lookup(column.value, "nullable", true)
     }
   }
+}
+
+resource "snowflake_table_constraint" "primary_keys" {
+  for_each = snowflake_table.snowflake_tables
+
+  name     = "PRIMARY_KEY_CONSTRAINT"
+  type     = "PRIMARY KEY"
+  table_id = each.value.id
+  #columns  = ["ID"]
+  columns = local.tables[index(local.tables.*.name, each.value.name)].primary_key
+  comment = "Primary key for ${local.tables[index(local.tables.*.name, each.value.name)].name} table"
 }
 
 resource "snowflake_tag" "tag" {
@@ -154,17 +166,19 @@ locals {
       fields = [
         { name = "ID", type = "INTEGER" },
         { name = "TITLE", type = "INTEGER", nullable = false }
-      ]
+      ],
+      primary_key = ["ID", "TITLE"]
     },
     {
       name    = "ACTOR"
       comment = "A table for Actors"
       fields = [
         { name = "ID", type = "INTEGER", comment = "ID field" },
-        { name = "FIRST_NAME", type = "STRING"},
-        { name = "LAST_NAME", type = "STRING"},
+        { name = "FIRST_NAME", type = "STRING" },
+        { name = "LAST_NAME", type = "STRING" },
         { name = "DOB", type = "DATE", comment = "Date of Birth" }
-      ]
+      ],
+      primary_key = ["ID"]
     }
   ]
 

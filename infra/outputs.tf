@@ -129,10 +129,23 @@ output "movie_key_prefix" {
   value = lookup(local.bucket_key_prefixes, "MOVIE", "default")
 }
 
+output "primary_key_for_actor_table" {
+  #value = "${index(local.tables, "ACTOR")}"
+  value = local.tables[index(local.tables.*.name, "ACTOR")].primary_key
+}
+output "primary_key_for_movies2_table" {
+  #value = "${index(local.tables, "ACTOR")}"
+  value = local.tables[index(local.tables.*.name, "MOVIE2")].primary_key
+}
+
 output "table_fields_2" {
   value = local.table_fields
 }
 
 output "snowflake_table_names" {
   value = snowflake_table.snowflake_tables[*]
+}
+
+output "primary_keys" {
+  value = snowflake_table_constraint.primary_keys
 }
