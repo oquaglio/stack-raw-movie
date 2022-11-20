@@ -106,7 +106,6 @@ output "tables" {
 }
 
 output "number_of_tables" {
-
   value = length(local.tables)
 }
 
@@ -116,17 +115,13 @@ resource "null_resource" "tables" {
   triggers = {
     name = each.value.name
   }
-
 }
 
 output "table_fields" {
-  #value = null_resource.tables[0]
   value = local.tables[*].fields[*].name
 }
 
 output "bucket_key_prefixes" {
-  #value = null_resource.tables[0]
-  #value = lookup(local.bucket_key_prefixes, "MOVIE", "default")
   value = local.bucket_key_prefixes
 }
 
