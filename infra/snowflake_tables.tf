@@ -111,3 +111,56 @@ resource "snowflake_table" "movie" {
   }
 
 }
+
+
+
+resource "snowflake_table" "snowflake_tables" {
+
+  for_each = { for tbl in local.tables : tbl.name => tbl }
+
+  database            = snowflake_schema.schema.database
+  schema              = snowflake_schema.schema.name
+  data_retention_days = snowflake_schema.schema.data_retention_days
+  change_tracking     = false
+  name                = each.key
+
+  column {
+    name = "test"
+    type = "INTEGER"
+  }
+
+}
+
+#####################################
+# Table definitions
+#####################################
+
+locals {
+
+  tables = [
+    {
+      name    = "MOVIE2"
+      comment = "A table for Movies"
+      fields = [
+        { name = "ID", type = "INTEGER", nullable = true },
+        { name = "TITLE", type = "INTEGER", nullable = true }
+      ]
+    },
+    {
+      name    = "ACTOR"
+      comment = "A table for Actors"
+      fields = [
+        { name = "ID", type = "INTEGER", nullable = true },
+        { name = "FIRST_NAME", type = "STRING", nullable = true },
+        { name = "LAST_NAME", type = "STRING", nullable = true },
+        { name = "DOB", type = "DATE", nullable = true }
+      ]
+    }
+  ]
+
+  bucket_key_prefixes = {
+    "MOVIE" = "movies",
+    "ACTOR" = "actors"
+  }
+
+}
