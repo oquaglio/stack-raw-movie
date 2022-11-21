@@ -2,6 +2,11 @@
 
 Playpen for dbt, terraform, airflow, flyway...
 
+## Issues
+
+- You need to run deploy twice to get the event - there is a sequencing bug I haven't resolved
+- You need to rename the topic after destroy to get Snowflake to add a subscription to the pipe/SQS queue. This is a bug with Snowflake. Just add -1... -2 etc
+
 ## Terraform
 
 Powershell:
