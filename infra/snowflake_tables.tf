@@ -135,8 +135,13 @@ resource "snowflake_table" "snowflake_tables" {
   }
 }
 
+// apply primary keys
 resource "snowflake_table_constraint" "primary_keys" {
-  for_each = snowflake_table.snowflake_tables
+  for_each = {
+    for tbl in snowflake_table.snowflake_tables : tbl.name => tbl
+    # skip table if no primary key defined
+    if try(lookup(local.tables[index(local.tables.*.name, tbl.name)], "primary_key", false)) != false
+  }
 
   name     = "PRIMARY_KEY_CONSTRAINT"
   type     = "PRIMARY KEY"
@@ -159,6 +164,8 @@ resource "snowflake_tag" "tag" {
 locals {
 
   tables = [
+    # if no primary key, omit primary_key key
+
     {
       name    = "MOVIE2"
       comment = "Movies"
@@ -178,6 +185,14 @@ locals {
         { name = "DOB", type = "DATE", comment = "Date of Birth" }
       ],
       primary_key = ["ID"]
+    },
+    {
+      name    = "GENRE"
+      comment = "Movie Genres"
+      fields = [
+        { name = "ID", type = "INTEGER", comment = "ID field" },
+        { name = "NAME", type = "STRING" }
+      ]
     }
   ]
 

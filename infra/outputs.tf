@@ -129,20 +129,11 @@ output "movie_key_prefix" {
   value = lookup(local.bucket_key_prefixes_for_tables, "MOVIE", "default")
 }
 
-output "primary_key_for_actor_table" {
-  #value = "${index(local.tables, "ACTOR")}"
-  value = local.tables[index(local.tables.*.name, "ACTOR")].primary_key
-}
-output "primary_key_for_movies2_table" {
-  #value = "${index(local.tables, "ACTOR")}"
-  value = local.tables[index(local.tables.*.name, "MOVIE2")].primary_key
-}
-
 output "table_fields_2" {
   value = local.table_fields
 }
 
-output "snowflake_table_names" {
+output "snowflake_tables" {
   value = snowflake_table.snowflake_tables[*]
 }
 
@@ -150,14 +141,38 @@ output "primary_keys" {
   value = snowflake_table_constraint.primary_keys
 }
 
-output "copy_stmts_for_movie2_table" {
-  #value = "${index(local.tables, "ACTOR")}"
-  #value = local.copy_statements["MOVIE2"]
+output "pipe_copy_stmts" {
   value = local.pipes[index(local.pipes.*.table, "MOVIE2")].copy_stmt
 }
 
 output "copy_stmts_for_actor_table" {
-  #value = "${index(local.tables, "ACTOR")}"
-  #value = local.copy_statements["MOVIE2"]
   value = local.pipes[index(local.pipes.*.table, "ACTOR")].copy_stmt
+}
+
+output "snowflake_tables2" {
+  value = [for tbl in snowflake_table.snowflake_tables : tbl]
+}
+
+output "snowflake_table_names" {
+  value = [for tbl in snowflake_table.snowflake_tables : tbl.name]
+}
+
+output "movie2_attrs" {
+  value = local.tables[index(local.tables.*.name, "MOVIE2")]
+}
+
+output "movie2_pk" {
+  value = lookup(local.tables[index(local.tables.*.name, "MOVIE2")], "primary_key")
+}
+
+output "genre_pk" {
+  value = [for tbl in local.tables : try(lookup(local.tables[index(local.tables.*.name, tbl.name)], "primary_key", false))]
+}
+
+output "pipes" {
+  value = [for pipe in local.pipes : pipe.name]
+}
+
+output "pipe_copy_statements" {
+  value = [for pipe in local.pipes : local.pipes[index(local.pipes.*.name, pipe.name)].copy_stmt]
 }
