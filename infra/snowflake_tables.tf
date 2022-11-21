@@ -141,9 +141,8 @@ resource "snowflake_table_constraint" "primary_keys" {
   name     = "PRIMARY_KEY_CONSTRAINT"
   type     = "PRIMARY KEY"
   table_id = each.value.id
-  #columns  = ["ID"]
-  columns = local.tables[index(local.tables.*.name, each.value.name)].primary_key
-  comment = "Primary key for ${local.tables[index(local.tables.*.name, each.value.name)].name} table"
+  columns  = local.tables[index(local.tables.*.name, each.value.name)].primary_key
+  comment  = "Primary key for ${local.tables[index(local.tables.*.name, each.value.name)].name} table"
 }
 
 resource "snowflake_tag" "tag" {
@@ -162,16 +161,16 @@ locals {
   tables = [
     {
       name    = "MOVIE2"
-      comment = "A table for Movies"
+      comment = "Movies"
       fields = [
         { name = "ID", type = "INTEGER" },
-        { name = "TITLE", type = "INTEGER", nullable = false }
+        { name = "TITLE", type = "STRING", nullable = false }
       ],
       primary_key = ["ID", "TITLE"]
     },
     {
       name    = "ACTOR"
-      comment = "A table for Actors"
+      comment = "Actors"
       fields = [
         { name = "ID", type = "INTEGER", comment = "ID field" },
         { name = "FIRST_NAME", type = "STRING" },
@@ -182,13 +181,9 @@ locals {
     }
   ]
 
-  bucket_key_prefixes = {
+  bucket_key_prefixes_for_tables = {
     "MOVIE" = "movies",
     "ACTOR" = "actors"
-  }
-
-  copy_statements = {
-    "to" = "do"
   }
 
   table_fields = flatten([

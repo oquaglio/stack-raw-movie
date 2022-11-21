@@ -93,8 +93,8 @@ output "snowflake_pipe_name" {
   value = snowflake_pipe.pipe_movies.name
 }
 
-output "snowflake_pipe" {
-  value = snowflake_pipe.pipe_movies
+output "snowflake_pipes" {
+  value = snowflake_pipe.snowflake_pipes
 }
 
 output "aws_s3_bucket_notification" {
@@ -122,11 +122,11 @@ output "table_fields" {
 }
 
 output "bucket_key_prefixes" {
-  value = local.bucket_key_prefixes
+  value = local.bucket_key_prefixes_for_tables
 }
 
 output "movie_key_prefix" {
-  value = lookup(local.bucket_key_prefixes, "MOVIE", "default")
+  value = lookup(local.bucket_key_prefixes_for_tables, "MOVIE", "default")
 }
 
 output "primary_key_for_actor_table" {
@@ -148,4 +148,16 @@ output "snowflake_table_names" {
 
 output "primary_keys" {
   value = snowflake_table_constraint.primary_keys
+}
+
+output "copy_stmts_for_movie2_table" {
+  #value = "${index(local.tables, "ACTOR")}"
+  #value = local.copy_statements["MOVIE2"]
+  value = local.pipes[index(local.pipes.*.table, "MOVIE2")].copy_stmt
+}
+
+output "copy_stmts_for_actor_table" {
+  #value = "${index(local.tables, "ACTOR")}"
+  #value = local.copy_statements["MOVIE2"]
+  value = local.pipes[index(local.pipes.*.table, "ACTOR")].copy_stmt
 }
