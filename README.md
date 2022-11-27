@@ -21,7 +21,7 @@ TBC
 
 ## Create Python Virt Env for DBT
 
-In root:
+In root dir:
 
 ``` shell
 py -m venv dbt-env
