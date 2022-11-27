@@ -49,7 +49,7 @@ variable "environment" {
 variable "bucket_object_prefixes" {
   description = "List of bucket object prefixes to create"
   type        = set(string)
-  default     = ["movies/", "directors/", "actors/", "movies2/"]
+  default     = ["landing/", "movies/", "directors/", "actors/", "landing/movies2/"]
 }
 
 #--------------------------------------------------------------

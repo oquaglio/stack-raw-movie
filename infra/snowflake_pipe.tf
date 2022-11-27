@@ -60,7 +60,7 @@ locals {
         SELECT
           TRY_CAST($1:id::TEXT AS INTEGER) AS ID,
           $1:title::TEXT AS TITLE
-        FROM @${snowflake_schema.schema.database}.${snowflake_schema.schema.name}.${snowflake_stage.stage_movies.name}/movies2
+        FROM @${snowflake_schema.schema.database}.${snowflake_schema.schema.name}.${snowflake_stage.stage_movies.name}/landing/movies2
       )
       EOT
     },
@@ -75,7 +75,7 @@ locals {
           CASE WHEN $1:properties IS NULL THEN NULL ELSE DEV.RAW_MOVIE.GET_NAME_VALUE($1:properties)['First Name']::TEXT END AS FIRST_NAME,
           CASE WHEN $1:properties IS NULL THEN NULL ELSE DEV.RAW_MOVIE.GET_NAME_VALUE($1:properties)['Last Name']::TEXT END AS LAST_NAME,
           CASE WHEN $1:properties IS NULL THEN NULL ELSE TRY_CAST(DEV.RAW_MOVIE.GET_NAME_VALUE($1:properties)['DOB']::TEXT AS DATE) END AS DOB
-        FROM @${snowflake_schema.schema.database}.${snowflake_schema.schema.name}.${snowflake_stage.stage_movies.name}/actors
+        FROM @${snowflake_schema.schema.database}.${snowflake_schema.schema.name}.${snowflake_stage.stage_movies.name}/landing/actors
       )
       EOT
     },
@@ -88,7 +88,7 @@ locals {
         SELECT
           TRY_CAST($1:id::TEXT AS INTEGER) AS ID,
           CASE WHEN $1:properties IS NULL THEN NULL ELSE DEV.RAW_MOVIE.GET_NAME_VALUE($1:properties)['Name']::TEXT END AS NAME
-        FROM @${snowflake_schema.schema.database}.${snowflake_schema.schema.name}.${snowflake_stage.stage_movies.name}/genres
+        FROM @${snowflake_schema.schema.database}.${snowflake_schema.schema.name}.${snowflake_stage.stage_movies.name}/landing/genres
       )
       EOT
     }
